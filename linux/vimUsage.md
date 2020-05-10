@@ -4,7 +4,7 @@
 	* [录制宏](#录制宏)
 	* [多光标操作](#多光标操作)
 + [`<Leader>` 有空格开始的快捷键](#leader-有空格开始的快捷键)
-+ [**markdown edit** 以 `,` 开始](#markdown-edit-以--开始)
++ [markdown edit 以 `,` 开始](#markdown-edit-以--开始)
 + [分屏和标签页](#分屏和标签页)
 + [表格工具插件](#表格工具插件)
 + [nerdtree 文件浏览器](#nerdtree-文件浏览器)
@@ -12,6 +12,11 @@
 + [autopairs](#autopairs)
 + [prettier](#prettier)
 + [coc](#coc)
+	* [`CocList extensions` 查看插件工作状态](#coclist-extensions-查看插件工作状态)
+	* [`coc-emmet` 的相关问题](#coc-emmet-的相关问题)
+	* [`coc-explorer`](#coc-explorer)
+	* [`coc-translate`](#coc-translate)
++ [vim 绑定键位的相关指令](#vim-绑定键位的相关指令)
 
 <!-- /TOC -->
 
@@ -34,7 +39,7 @@
 | Y           | 复制整行到剪贴板   |            |
 | r           | 替换一个字符       |            |
 | R           | 替换模式           |            |
-| /s/A/b/g    | 替换               | g 代表整行 |
+| :s/A/b/g    | 替换               | g 代表整行 |
 | #,#/s/A/b/g | 指定行替换         |            |
 | %s/A/B/g    | 全文替换           |            |
 
@@ -61,7 +66,7 @@ vim 可以使用多光标，在可视化当中选择好需要多光标的部分�
 
 ---
 
-# **markdown edit** 以 `,` 开始
+# markdown edit 以 `,` 开始
 
 | shortcut    | function       | commit |
 | ----------- | -------------- | ------ |
@@ -155,11 +160,83 @@ coc 是一个代码补全插件，是从 Vscode 来的。
 安装相应的 coc 的插件可以在`.config/coc/extensions/node_modules` 下使用 `yarn add extensions-name` 来安装。
 
 使用的快捷键
-| shortcut  | function             | commit |
-|-----------|----------------------|--------|
-| Tap       | 在建议当中循环       |
-| shift Tab | 向上循环建议         |
-| ctrl g u  | 撤销上一次的补充结果 |
-| K         | 找相应的文档         |        |
-
+| shortcut             | function                           | commit |
+|----------------------|------------------------------------|--------|
+| Tap                  | 在建议当中循环                     |
+| shift Tab            | 向上循环建议                       |
+| ctrl g u             | 撤销上一次的补充结果               |
+| ctrl j k             | 在修改的地方循环，跟vscode一样     |        |
+| K                    | 找相应的文档                       |        |
+| []g                  | 前后错误                           |        |
+| gd, gr，gi           | 定义和参考位置, 用的地方           |        |
+| leader cr            | rename                             |        |
+| leader cf            | format                             |        |
+| leader cc            | correct auto fix                   |        |
+| leader ca            | 诊断代码                           |        |
+| leader ce            | extensions                         |        |
+| leader cb            | commands                           |        |
+| leader co            | CocList outline                    | _      |
+| leader cs            | coclist -I symbol                  | _      |
+| leader cj ck         | next, previous                     |        |
+| leader cp            | CocList Resume                     | \*     |
+| leader cma, cmb, cmc | bookmard create, annotate and list |        |
+| leader cf cr         | translate                          |        |
 ... 还有很多快捷键，等待发现。
+
+## `CocList extensions` 查看插件工作状态
+
+- `*` the extensions is actived;
+- `?` the extensions is invalid;
+- `-` extensions is disable;
+- `+` extensions is loaded, but not actived;
+
+coc 可以像 vscode 那样为工作区进行特定的配置，通过 `CocLocalConfig` 来访问。
+查看键是不是被已经使用，可以通过 `:verbose imap keys` 来看。
+
+## `coc-emmet` 的相关问题
+
+不用进行仔细配置，过程中会出现网络问题，通过**代理** `CocList extensions emmet fix` 来修复。
+
+## `coc-explorer` 
+| shortcut   | function                                | comment |
+|------------|-----------------------------------------|---------|
+| leader ct  | open exploer                            |         |
+| ?          | function list                           |         |
+| k, j       | move cursor                             |         |
+| K,J        | selection                               |         |
+| o          | expand or Collapse                      |         |
+| backspace  | return parent file                      |         |
+| return     | open or cd depend on the type of file   |         |
+| t, s, E, e | tab, split, vsplit and open file        |         |
+| y, Y, c, x | copy fielpath, filename, file, cutfile  |         |
+| p          | paste file                              |         |
+| d, D       | delete, delete Forever                  |         |
+| a, A       | add file, add directory                 |         |
+| r          | rename                                  |         |
+| .          | toggle hidden                           |         |
+| R          | refresh                                 |         |
+| f          | find file in the current directory      |         |
+| gs, gf, gb | go select, go file source, go buffer    |         |
+| [[, ]]     | ranger like                             |         |
+| [m, [d, [c | go to modified, diagnostic, git changed |         |
+
+## `coc-translate` 
+支持导出查词历史。
+
+# vim 绑定键位的相关指令
+
+Overview of which map command works in which mode. More details below.
+COMMANDS MODES ~
+```
+:map :noremap :unmap Normal, Visual, Select, Operator-pending
+:nmap :nnoremap :nunmap Normal
+:vmap :vnoremap :vunmap Visual and Select
+:smap :snoremap :sunmap Select
+:xmap :xnoremap :xunmap Visual
+:omap :onoremap :ounmap Operator-pending
+:map! :noremap! :unmap! Insert and Command-line
+:imap :inoremap :iunmap Insert
+:lmap :lnoremap :lunmap Insert, Command-line, Lang-Arg
+:cmap :cnoremap :cunmap Command-line
+:tmap :tnoremap :tunmap Terminal
+```
