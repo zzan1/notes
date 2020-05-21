@@ -1,8 +1,5 @@
-var color=[1,2,3,4,5];
-var base=10;
-
-var sum=color.reduce((pre, cur)=>{
-	return pre+cur;
-}, base)
-console.log(sum);
-//[ 'blue', 'red', 'yellow' ] blue-red-yellow
+	re= /.at/g;
+	console.log(re.exec("cat, aat, lat"))
+	//[ 'cat', index: 0, input: 'cat, aat, lat', groups: undefined ]
+	console.log(re.exec("cat, aat, lat"))
+	//[ 'aat', index: 5, input: 'cat, aat, lat', groups: undefined ]
