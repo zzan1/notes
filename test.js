@@ -1,5 +1,14 @@
-	re= /.at/g;
-	console.log(re.exec("cat, aat, lat"))
-	//[ 'cat', index: 0, input: 'cat, aat, lat', groups: undefined ]
-	console.log(re.exec("cat, aat, lat"))
-	//[ 'aat', index: 5, input: 'cat, aat, lat', groups: undefined ]
+function sum(num1, num2){
+	return num2 +  num1;
+}
+
+var o={
+	"num3":3,
+	"num4":4
+}
+function callSum(num1, num2){
+	num3=3;
+	num5=5;
+	console.log(sum.apply(o, [num3, num4]));
+}
+callSum(1,2)
