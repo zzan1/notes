@@ -959,7 +959,55 @@ function 本质是一个对象，每个函数都是 Function 的实例，都具�
 	两个参数，第一个是变量对象，第二个是其中的参数数组。
 
 	```javascript
-	
+	function sum(num1, num2){
+		return this.num2 +  this.num1;
+	}
+
+	var o={
+		num1:3,
+		num2:4
+	}
+	function callSum(num1, num2){
+		num3=4;
+		num5=5;
+		console.log(sum.apply(o, [num1, num2]));//7
+		console.log(sum.apply(o, [num3, num5]));//7
+	}
+	callSum(1,2)
 	```
 
-	<++>
+	可以看出，给 `sum` 函数绑定了 o 变量对象之后，就采用 o 对象中的参数，而忽略的本身传递给的参数(1, 2)。
+
+	绑定对象后，函数执行时 **只会** 找对象当中的**同名参数**。 它只有一个变量对象，没有全局的变量对象了。当函数执行所需的变量没有在变量对象中找到时，就会出现 underfined。 
+
+	apply 第二个参数要求传递一个数组， 这个数组是用来给函数中剩下的没有用 this 指明变量对象的参数来传参的。如果全都用 this 定义了，这个就可以不写。
+
+	会按照参数的位置以此传递的，如果第一个参数已经用 this 绑定了，那么列表中的第一个元素就没用了，是对应的传参的。所以，把 this 绑定的值放到最后。
+
+- call() 函数
+
+	两个参数，作用和 apply 一样，差别在于第二个参数以单个值而不是列表以此传递给函数。
+
+另外一个特殊的，关于指定 this 变量对象的方法是 `bind()`。 这个方法会先创建一个函数实例，然后这个函数实例的 this 值会绑定到 bind() 方法的参数上。
+	
+```javascript
+function sum(num1, num2){
+	console.log(this.num1, this.num2);
+	return this.num2 +  this.num1;
+}
+var o={
+	num1:3,
+	num2:4
+}
+
+var oSum = sum.bind(o);
+
+console.log(oSum(num2))
+```
+
+一样的，`bind()` 方法绑定一个对象之后，这个重新复制的函数就只有一个变量对象 o 了。 全局变量传递给它没有作用。
+
+`toLocalString(), toString(), valueOf()` 都返回函数代码体。
+
+
+

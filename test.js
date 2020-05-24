@@ -1,14 +1,13 @@
-function sum(num1, num2){
-	return num2 +  num1;
+function sum(num2, num1){
+	console.log(this.num1, num2);
+	return num2 +  this.num1;
 }
-
 var o={
-	"num3":3,
-	"num4":4
+	num1:3
 }
-function callSum(num1, num2){
-	num3=3;
-	num5=5;
-	console.log(sum.apply(o, [num3, num4]));
-}
-callSum(1,2)
+var num2=5;
+var oSum = sum.bind(o);
+
+console.log(oSum(num2));
+console.log(sum.apply(o, [num2]));
+console.log(sum.call(o, num2));
