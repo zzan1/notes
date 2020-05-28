@@ -1,13 +1,3 @@
-function sum(num2, num1){
-	console.log(this.num1, num2);
-	return num2 +  this.num1;
-}
-var o={
-	num1:3
-}
-var num2=5;
-var oSum = sum.bind(o);
+let result=[{a:1},{a:2},{a:3}].reduce((prev, cur)=>prev += cur.a, 0);
 
-console.log(oSum(num2));
-console.log(sum.apply(o, [num2]));
-console.log(sum.call(o, num2));
+console.log(result);
