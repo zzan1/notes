@@ -1,3 +1,8 @@
-let result=[{a:1},{a:2},{a:3}].reduce((prev, cur)=>prev += cur.a, 0);
+"use strict"
 
-console.log(result);
+let color="red";
+
+eval(console.log(color));
+eval(let fruit="apple");
+
+console.log(fruit)
