@@ -1,8 +1,20 @@
-"use strict"
+var book = {
+	_year: 2004,
+	edition: 1
+};
 
-let color="red";
+Object.defineProperty(book, "year", {
+	get: function() {
+		return this._year;
+	},
 
-eval(console.log(color));
-eval(let fruit="apple");
+	set: function(newValue) {
+		this._year = newValue;
+	}
+});
 
-console.log(fruit)
+console.log(book.year);
+
+book.year = 2005;
+
+console.log(book.year);
