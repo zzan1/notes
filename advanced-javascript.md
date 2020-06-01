@@ -1089,8 +1089,7 @@ console.log(falseObj instanceof Boolean) ; //true
 
 - trim() 删除前后的空格，不改变字符串。 返回一个修改后的字符串。
 
-- toLowerCase(), toUpperCase() 字符串大小转换的方法
-	
+- toLowerCase(), toUpperCase() 字符串大小转换的方法	
 
 
 
