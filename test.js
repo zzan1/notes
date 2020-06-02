@@ -1,17 +1,18 @@
-var book = {
-	_year: 2004,
-	edition: 1
-};
+function Book(){}
 
-Object.defineProperties(book,{
-	"year":{
-		"value": 2005
-	},
-	"edition":{
-		"value": 3
+Book.prototype.name="Tom"
+
+book1= new Book()
+
+Book.prototype = {
+	constructor: Book,
+	name:"Wang",
+	sayName:function(){
+		return this.name
 	}
-})
+}
 
-console.log(book.year);
+book2 = new Book()
 
-console.log(book.edition);
+//book1.sayName()
+book2.sayName()
