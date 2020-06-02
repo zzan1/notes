@@ -233,7 +233,8 @@ for (let property in book1){console.log(property)}
 打破了关系, 然后重写指定 constructor. 
 
 - 重写之前的实例: 不会继承, 不改变
-- 之后的实例: 会继承, 
+- 之后的实例: 一样, 有没有 constructor 也不影响 instanceof 的结果, 都是 true. 
 
-- [ ] 这里有问题, 如果不执行 sayName() 后面的, 就是空, 执行了,就正常了.
+只影响重写之前的属性.
+
 
