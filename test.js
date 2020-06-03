@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const numbers=[1,2,3,4,5]
 
 let max=Math.max.apply(Math, numbers)
@@ -19,3 +20,23 @@ console.log(strT.length)
 console.log(strT.charAt(4), strT.charCodeAt(4))
 const strT2="+12bulue"
 console.log(parseInt(strT2))
+=======
+function Book(){}
+
+Book.prototype.name="Tom"
+
+book1= new Book()
+
+Book.prototype = {
+	constructor: Book,
+	name:"Wang",
+	sayName:function(){
+		return this.name
+	}
+}
+
+book2 = new Book()
+
+//book1.sayName()
+book2.sayName()
+>>>>>>> e947b10c9d6d69d8d22e8de6f176c5f7acf18ba2
