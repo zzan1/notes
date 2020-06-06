@@ -1,42 +1,40 @@
-<<<<<<< HEAD
-const numbers=[1,2,3,4,5]
+function Book() {}
 
-let max=Math.max.apply(Math, numbers)
+Book.prototype.name = 'Tom'
 
-// console.log(Math.random()*9 + 10)
-
-const IF=false;
-
-const IFObj=new Boolean(false)
-
-const number = 100.12;
-
-//console.log(number.toString(), number.toLocaleString(), number.valueOf())
-// console.log(number.toString(2), number.toString(16))
-// console.log(number.toFixed(1), number.toExponential(1), number.toPrecision(1))
-//
-const strT = "this我"
-console.log(strT.length)
-console.log(strT.charAt(4), strT.charCodeAt(4))
-const strT2="+12bulue"
-console.log(parseInt(strT2))
-=======
-function Book(){}
-
-Book.prototype.name="Tom"
-
-book1= new Book()
+book1 = new Book()
 
 Book.prototype = {
-	constructor: Book,
-	name:"Wang",
-	sayName:function(){
-		return this.name
-	}
+  constructor: Book,
+  name: 'Wang',
+  sayName: function () {
+    return this.name
+  },
 }
 
 book2 = new Book()
 
-//book1.sayName()
-book2.sayName()
->>>>>>> e947b10c9d6d69d8d22e8de6f176c5f7acf18ba2
+// book1 没有 sayname
+console.log(book2.sayName(), book1.sayName) 
+
+// book1 no chage
+console.log(
+  book2.name,
+  book1.name
+)
+
+for (let property in book2) {
+  console.log(property)
+}
+console.log("-------")
+for (let property in book1) {
+  console.log(property)
+}
+
+// book1 no longer is belong to Book, (Ture, false)
+console.log(book2 instanceof Book, book1 instanceof Book)
+
+// ture false
+console.log(Book.prototype.isPrototypeOf(book2), Book.prototype.isPrototypeOf(book1))
+
+console.log(Book.constructor)
