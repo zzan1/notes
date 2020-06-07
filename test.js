@@ -1,40 +1,31 @@
-function Book() {}
+function object(base) {
+	function NewObj() {}
+	NewObj.prototype = base;
+	return new NewObj();
+}
+function SuperType() {
+	this.name = "yi";
+}
+SuperType.prototype.sayName = function() {
+	console.log(this.name);
+};
 
-Book.prototype.name = 'Tom'
-
-book1 = new Book()
-
-Book.prototype = {
-  constructor: Book,
-  name: 'Wang',
-  sayName: function () {
-    return this.name
-  },
+function SubType() {
+	this.edition = "23";
 }
 
-book2 = new Book()
-
-// book1 没有 sayname
-console.log(book2.sayName(), book1.sayName) 
-
-// book1 no chage
+SubType.prototype = object(SuperType.prototype)
 console.log(
-  book2.name,
-  book1.name
-)
+	Object.getOwnPropertyNames(SubType.prototype),
+	SubType.prototype.constructor
+);
+//[] [Function: SuperType]
+let book4 = new SubType();
+console.log(Object.getOwnPropertyNames(book4));
+//[ 'name', 'edition' ]
+console.log(book4 instanceof SubType, book4 instanceof SuperType)
+// true true
+console.log(SubType.prototype.isPrototypeOf(book4), SuperType.prototype.isPrototypeOf(book4))
+// true true
 
-for (let property in book2) {
-  console.log(property)
-}
-console.log("-------")
-for (let property in book1) {
-  console.log(property)
-}
 
-// book1 no longer is belong to Book, (Ture, false)
-console.log(book2 instanceof Book, book1 instanceof Book)
-
-// ture false
-console.log(Book.prototype.isPrototypeOf(book2), Book.prototype.isPrototypeOf(book1))
-
-console.log(Book.constructor)
