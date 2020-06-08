@@ -1,31 +1,20 @@
-function object(base) {
-	function NewObj() {}
-	NewObj.prototype = base;
-	return new NewObj();
+function inheritPrototype(SubType, SuperType) {
+	let MediaObj = function() {};
+	// 取消掉 SuperType 的构造函数, 只复制原型
+	MediaObj.prototype = SuperType.prototype;
+	SubType.prototype = new MediaObj();
 }
-function SuperType() {
-	this.name = "yi";
+
+function SuperType(name, list) {
+	this.name = name;
+	this.list = list;
 }
 SuperType.prototype.sayName = function() {
 	console.log(this.name);
 };
-
-function SubType() {
-	this.edition = "23";
+function SubType(age, name, list) {
+	this.age = age;
+	// 实现传参 实现 不同的引用类型u值内存地址
+	SuperType.call(this, name, list);
 }
-
-SubType.prototype = object(SuperType.prototype)
-console.log(
-	Object.getOwnPropertyNames(SubType.prototype),
-	SubType.prototype.constructor
-);
-//[] [Function: SuperType]
-let book4 = new SubType();
-console.log(Object.getOwnPropertyNames(book4));
-//[ 'name', 'edition' ]
-console.log(book4 instanceof SubType, book4 instanceof SuperType)
-// true true
-console.log(SubType.prototype.isPrototypeOf(book4), SuperType.prototype.isPrototypeOf(book4))
-// true true
-
-
+inheritPrototype(SubType, SuperType);

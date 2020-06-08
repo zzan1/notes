@@ -540,10 +540,39 @@ console.log(Object.getOwnPropertyNames(book4));
 
 ```
 
+寄生组合式继承改变原型链的缺点了吗?
+
+解决了. **传递参数:** 通过在子类中调用 `call` 可以解决向父类构造函数中传递参数. **引用类型的值**, `call` 函数已经为不同的引用类型的值绑定了不同的对象. **重复定义属性**, 因为现在不再执行 `new SuperType()` 而是直接将 `SuperType.prototype` , 复制给了中间对象的原型对象. 没用 `new` 再次执行构造函数的过程了.
+
+一个完整的寄生式组合继承
+
+```javascript
+function inheritPrototype(SubType, SuperType) {
+	let MediaObj = function() {};
+	// 取消掉 SuperType 的构造函数, 只复制原型
+	MediaObj.prototype = SuperType.prototype;
+	SubType.prototype = new MediaObj();
+}
+
+function SuperType(name, list) {
+	this.name = name;
+	this.list = list;
+}
+SuperType.prototype.sayName = function() {
+	console.log(this.name);
+};
+function SubType(age, name, list) {
+	this.age = age;
+	// 实现传参 实现 不同的引用类型u值内存地址
+	SuperType.call(this, name, list);
+}
+inheritPrototype(SubType, SuperType);
+```
+
 1. 从第一个点和第二个点可以看出: 原型链继承(组合继承)原型函数中仍定义了一个 `name`, 重复定义了两次. 寄生式继承(第二个点)原型函数中不存在重复定义. 原因是: `new` 只会执行后面的函数, 为新对象定义属性. 而寄生式继承的 `new` 的 `NewObj` 函数没有定义自己的属性. 组合继承的 `new` 重复定义了 `SubType()` 的name属性, 这个属性已经从它的实例继承来了.
 2. 构造函数就只是一个函数对象. 它定义的属性只有 `new` 时才会到实例中. 
 3. prototype 对象的属性在实例中不是显然存在, 是通过 `[[prototype]]` 特性链接的. 所以实例的这部分属性可以通过继承来改变.
-4. 动态手动的指定构造函数, 防止 SubType 的实例在使用 `instanceOf SuperType` 时为 true.
+4. 动态手动的指定构造函数, 只是一种习惯. 他无法改变 Instanceof 的结果.
 
 问题: 
 1. `instanceOf` 和 `isPrototypeOf` 的工作原理是什么;
