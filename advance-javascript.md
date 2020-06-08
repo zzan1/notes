@@ -16,8 +16,8 @@ ECMA-262 第 5 版定义了只有内部使用的**特性**, 用来描述属性�
 
   数据属性是指值为数据值的属性, 可以在这个位置读取和写入数值. 有四个特性:
 
-  - `[[Configurable]]`: 能否通过delete删除属性、能否再修改Enumerable、Writable（特殊，把Configurable设置为false后，这个属性也能被修改）、Value（更特殊，看下面例子）、Configurable属性这四个属性;
-  - `[[Enumerable]]`: 能否迭代, 使用 `for - in `循环返回这个属性;
+  - `[[Configurable]]`: 能否通过 delete 删除属性、能否再修改 Enumerable、Writable（特殊，把 Configurable 设置为 false 后，这个属性也能被修改）、Value（更特殊，看下面例子）、Configurable 属性这四个属性;
+  - `[[Enumerable]]`: 能否迭代, 使用 `for - in`循环返回这个属性;
   - `[[Writable]]`: 能否修改值, 区别 `[[configurable]]`;
   - `[[Value]]`: 数据值的位置. 默认为 underfined. 读取值和设定值都是这个特性.
 
@@ -72,21 +72,25 @@ ECMA-262 第 5 版定义了只有内部使用的**特性**, 用来描述属性�
 const obj = {};
 
 // 数据属性
-Object.defineProperty(obj, 'data', {
-  value: 0,
-  writable: true,
-  configurable: true,
-  enumerable: true
+Object.defineProperty(obj, "data", {
+	value: 0,
+	writable: true,
+	configurable: true,
+	enumerable: true
 });
 // 等价于
 obj.data = 0;
 
 // 访问器属性
-Object.defineProperty(obj, 'accessor', {
-  set(val) { this.data = val; },
-  get() { return this.data; },
-  configurable: true,
-  enumerable: true
+Object.defineProperty(obj, "accessor", {
+	set(val) {
+		this.data = val;
+	},
+	get() {
+		return this.data;
+	},
+	configurable: true,
+	enumerable: true
 });
 ```
 
@@ -102,24 +106,26 @@ Object.defineProperty(obj, 'accessor', {
 
 ```javascript
 var book = {
-  _year: 2004,
-  edition: 1,
-}
+	_year: 2004,
+	edition: 1
+};
 
 Object.defineProperties(book, {
-  year: {
-    value: 2005,
-  },
-  edition: {
-    value: 3,
-  },
-})
+	year: {
+		value: 2005
+	},
+	edition: {
+		value: 3
+	}
+});
 
-console.log(book.year)
+console.log(book.year);
 
-console.log(book.edition)
+console.log(book.edition);
 ```
-注意: 
+
+注意:
+
 1. 调用`Object.defineProperty()` 不指定的特性默认都为 false;
 2. 如果设置了 `configurable` 为 false, 则无法该回来了. 也不能设置其他属性的值了, 除了下面的特例;
 3. `writable` 仍可以自由设置. `value` 只有当 `writable`和`configurable` 都为 false 时才不可以设置.
@@ -133,17 +139,17 @@ console.log(book.edition)
 
    ```javascript
    function createPerson(name, age, job) {
-     var o = new Object()
-     o.name = name
-     o.age = age
-     o.job = job
-     o.sayName = function () {
-       alert(this.name)
-     }
-     return o
+   	var o = new Object();
+   	o.name = name;
+   	o.age = age;
+   	o.job = job;
+   	o.sayName = function () {
+   		alert(this.name);
+   	};
+   	return o;
    }
-   var person1 = createPerson('Nicholas', 29, 'Software Engineer')
-   var person2 = createPerson('Greg', 27, 'Doctor')
+   var person1 = createPerson("Nicholas", 29, "Software Engineer");
+   var person2 = createPerson("Greg", 27, "Doctor");
    ```
 
    用函数来封装数据接口
@@ -174,75 +180,75 @@ console.log(book.edition)
    ```javascript
    function Book() {}
 
-   Book.prototype.name = 'Nicholas'
+   Book.prototype.name = "Nicholas";
 
-   var book1 = new Book()
+   var book1 = new Book();
 
-   console.log(book1.name)
+   console.log(book1.name);
    // Nicholas
    ```
 
 5. 组合使用原型模式和构造函数
 
-  可以将共享的属性放到原型中定义, 把实例自己单独的属性放到构造函数中定义.
+可以将共享的属性放到原型中定义, 把实例自己单独的属性放到构造函数中定义.
 
 6. 动态原型模式
 
-  ```javascript
-    const BookTwo=function(name, edition){
-			this.name = name;
-			this.edition = edition;
-			this.getEdition = function(){
-				return this.edition;
-    }
+```javascript
+const BookTwo = function (name, edition) {
+	this.name = name;
+	this.edition = edition;
+	this.getEdition = function () {
+		return this.edition;
+	};
 
-    if (typeof this.getName !== 'function'){
-      BookTwo.proptotype.getName= function(){
-        return this.name;
-      }
-    }
-    }
-  ```
+	if (typeof this.getName !== "function") {
+		BookTwo.proptotype.getName = function () {
+			return this.name;
+		};
+	}
+};
+```
 
-  不是重写原型函数, 之前定义的还在. 可以在第一次 new 时, **初始化**一个原型属性.
+不是重写原型函数, 之前定义的还在. 可以在第一次 new 时, **初始化**一个原型属性.
 
-  这么写, 会报错, 因为 `this.getName` 并没有声明, 却已经用来判断类型了
+这么写, 会报错, 因为 `this.getName` 并没有声明, 却已经用来判断类型了
 
 7. 寄生函数构造函数形式
-   ```javascript
+   ````javascript
    function Book(name, edition){
-			let o = new Array();
-			o.name = name;
-			o.edition = edition;
-			o.getEdition= function(){
-				return this.edition;
-				}
-			return o
-		}
-		const book1 = new Book("DOM", 2015);
-	 ```
+   ;
+   ;
+   ;
+   {
+   ;
+   }
+   o
+   }
+   ;
+   `
+   ````
 
-  寄生构造函数, 和工厂函数几乎一样, 除了使用 `new` 来创建对象. 它的作用是: **利用 new 来改变 this 的指向.**
+寄生构造函数, 和工厂函数几乎一样, 除了使用 `new` 来创建对象. 它的作用是: **利用 new 来改变 this 的指向.**
 
 8. 稳妥构造函数模式
 
-  没有公共属性, 不使用 `this` 对象, 也不使用 `new` 来指定 this 对象. 
+没有公共属性, 不使用 `this` 对象, 也不使用 `new` 来指定 this 对象.
 
-  目的: 防止外界更改自己的属性. 如下, 外界永远都不可能改变 `name` 和 `edition`
+目的: 防止外界更改自己的属性. 如下, 外界永远都不可能改变 `name` 和 `edition`
 
-  ```javascript
-  function Book(name, edition){
-    let o = new Array();
-    let name = name;
-    let edition = edition;
-    o.getEdition= function(){
-      return edition;
-    }
-    return o
+```javascript
+function Book(name, edition){
+  let o = new Array();
+  let name = name;
+  let edition = edition;
+  o.getEdition= function(){
+    return edition;
   }
-  Const book1 = Book("Dom", "2005")
-  ```
-
+  return o
+}
+Const book1 = Book("Dom", "2005")
+```
 
 ### 理解原型对象
 
@@ -251,9 +257,9 @@ console.log(book.edition)
 无论什么时候, 创建一个函数, 就会自动创建一个原型对象, 并且为这个函数创建 `prototype` 属性, 指向这个原型对象; 这个函数就只是函数对象, 原型对象才是创建的对象.
 
 ```javascript
-console.log(Object.getOwnPropertyNames(Book.prototype))
+console.log(Object.getOwnPropertyNames(Book.prototype));
 // [ 'constructor', 'name', 'plus' ]
-console.log(Object.getOwnPropertyNames(Book))
+console.log(Object.getOwnPropertyNames(Book));
 // [ 'length', 'name', 'arguments', 'caller', 'prototype' ]
 ```
 
@@ -292,66 +298,67 @@ console.log(Object.getOwnPropertyNames(Book))
 ```javascript
 function Book() {}
 
-Book.prototype.name = 'Tom'
+Book.prototype.name = "Tom";
 
-book1 = new Book()
+book1 = new Book();
 
 Book.prototype = {
-  constructor: Book,
-  name: 'Wang',
-  sayName: function () {
-    return this.name
-  },
-}
+	constructor: Book,
+	name: "Wang",
+	sayName: function () {
+		return this.name;
+	}
+};
 
-book2 = new Book()
+book2 = new Book();
 
 // book1 没有 sayname
-console.log(book2.sayName(), book1.sayName) 
+console.log(book2.sayName(), book1.sayName);
 
 // book1 no chage
-console.log(
-  book2.name,
-  book1.name
-)
+console.log(book2.name, book1.name);
 
 for (let property in book2) {
-  console.log(property)
+	console.log(property);
 }
-console.log("-------")
+console.log("-------");
 for (let property in book1) {
-  console.log(property)
+	console.log(property);
 }
 
 // book1 no longer is belong to Book, (Ture, false)
-console.log(book2 instanceof Book, book1 instanceof Book)
+console.log(book2 instanceof Book, book1 instanceof Book);
 
 // ture false
-console.log(Book.prototype.isPrototypeOf(book2), Book.prototype.isPrototypeOf(book1))
+console.log(
+	Book.prototype.isPrototypeOf(book2),
+	Book.prototype.isPrototypeOf(book1)
+);
 
-console.log(Book.constructor)
+console.log(Book.constructor);
 ```
 
 重写 prototype:
+
 1. 写不写 constructor 没有影响, 会自己补;
 2. 重写之前的实例: 不会继承, 不改变, `instanceof` `isPrototypeOf` 均改变;
 3. 之后的实例, 一切正常
-   
+
 只影响重写之前的属性.
 
 ### 继承
+
 大多数语言都支持两种继承方式：接口继承和实现继承。接口继承只继承方法签名，而实现继承则继承实际的方法。
 
 - [ ] 两种继承方式
 
-
 ECMAScript 只支持实现继承, 并且实现继承主要依靠原型链来实现.
 
 #### 原型链
+
 主要思想: 让子对象的原型对象等于父对象的实例
 
 ```javascript
-
 ```
 
 继承完之后:
@@ -366,22 +373,23 @@ ECMAScript 只支持实现继承, 并且实现继承主要依靠原型链来实�
 ![](https://cdn.jsdelivr.net/gh/zzan1/markdownPicture/normal/20200607122052.png)
 
 #### 原型链存在的问题
+
 包含引用类型值的原型属性会被所有实例共享, 一个实例改变了值, 则全部改变. 基本类型的值不会改变. 注意这和实例属性覆盖原型属性不一样. **因为两个实例的属性指向了同一个内存地址**.
 
 ```javascript
-let Book = function(){}
-Book.prototype.name='DOM';
-Book.prototype.list=[12,12,31,42];
-let book1= new Book();
+let Book = function () {};
+Book.prototype.name = "DOM";
+Book.prototype.list = [12, 12, 31, 42];
+let book1 = new Book();
 let book2 = new Book();
-book1.name.split().reverse().join()
+book1.name.split().reverse().join();
 
-console.log(book1.name, book2.name)
+console.log(book1.name, book2.name);
 // DOM DOM
 //
-book1.list.pop()
+book1.list.pop();
 
-console.log(book1.list, book2.list)
+console.log(book1.list, book2.list);
 
 //[ 12, 12, 31 ] [ 12, 12, 31 ]
 ```
@@ -389,6 +397,7 @@ console.log(book1.list, book2.list)
 原型链的第二个问题是：**在创建子类型的实例时，不能向超类型的构造函数中传递参数**.
 
 #### 借用构造函数
+
 ```javascript
 function SuperType() {
 	this.list = [1, 2, 3, 4];
@@ -397,16 +406,16 @@ function SubType() {
 	SuperType.call(this);
 }
 
-let book1 = new SubType()
-book1.list.pop()
-let book2 = new SubType()
-console.log(book1.list, book2.list)
-console.log(book1.list === book2.list)
+let book1 = new SubType();
+book1.list.pop();
+let book2 = new SubType();
+console.log(book1.list, book2.list);
+console.log(book1.list === book2.list);
 // [ 1, 2, 3 ] [ 1, 2, 3, 4 ]
 // false
 ```
 
-这种技术的思想很简单: **在子类型构造函数中调用父类的构造函数**. 当创建实例时, 会绑定不同的 `this` 的对象, 然后就避免了继承时引用类型使用相同的内存地址的为题. 
+这种技术的思想很简单: **在子类型构造函数中调用父类的构造函数**. 当创建实例时, 会绑定不同的 `this` 的对象, 然后就避免了继承时引用类型使用相同的内存地址的为题.
 
 但问题是: 父类只能是一个函数, 父类的原型属性无法通过 `this` 来绑定.
 
@@ -435,8 +444,11 @@ console.log(book1.list === book2.list);
 // [ 1, 2, 3 ] [ 1, 2, 3, 4 ]
 // false
 console.log(book1.name, book2.name);
-console.log(book1 instanceof SubType, book1 instanceof SuperType)
-console.log(SuperType.prototype.isPrototypeOf(book1),SubType.prototype.isPrototypeOf(book1))
+console.log(book1 instanceof SubType, book1 instanceof SuperType);
+console.log(
+	SuperType.prototype.isPrototypeOf(book1),
+	SubType.prototype.isPrototypeOf(book1)
+);
 // yi yi
 // true true
 // true true
@@ -445,11 +457,12 @@ console.log(SuperType.prototype.isPrototypeOf(book1),SubType.prototype.isPrototy
 把原型链和构造函数继承结合起来, 虽然解决了一部分问题, 但是, 现在还是不能在原型函数中定义引用类型的值, 其实也不需要了.
 
 #### 不是继承的对象复制: 原型式继承
+
 ```javascript
 function obj(base) {
 	function NewObj() {}
 	NewObj.prototype = base;
-	return new NewObj()
+	return new NewObj();
 }
 ```
 
@@ -460,9 +473,11 @@ function obj(base) {
 现在可以使用 `Object.create()` 来实现上面这个函数. 第一个参数就是 `baseObj`, 传递一个想要复制的对象. 第二个参数可以新增加属性, 格式像 `Object.defineProperty()` 第二个参数一样, 需要指定特性;
 
 #### 寄生式继承
-和原型模式 `obj()` `Object.create()` 没什么区别, 在重写原型对象后, 又为原型对象添加属性, 实现复制, 加强了基底对象. 
+
+和原型模式 `obj()` `Object.create()` 没什么区别, 在重写原型对象后, 又为原型对象添加属性, 实现复制, 加强了基底对象.
 
 #### 寄生组合式继承
+
 **组合式继承的缺点**: 在第一次调用 SuperType 构造函数时，SubType.prototype 会得到两个属性：name 和 colors；它们都是 SuperType 的实例属性，只不过现在位于 SubType 的原型中。当调用 SubType 构造函数时，又会调用一次 SuperType 构造函数，这一次又在新对象上创建了实例属性 name 和 colors。于是，这两个属性就屏蔽了原型中的两个同名属性. 有两组 name 和 colors 属性：一组在实例上，一组在 SubType 原型中。
 
 ```javascript
@@ -471,7 +486,7 @@ function object(base) {
 	NewObj.prototype = base;
 	return new NewObj();
 }
-// 寄生式继承的实现, 
+// 寄生式继承的实现,
 function inheritPrototype(baseObj, fatherObj) {
 	let prototype = object(fatherObj.prototype);
 	baseObj.prototype = prototype;
@@ -479,7 +494,7 @@ function inheritPrototype(baseObj, fatherObj) {
 function SuperType() {
 	this.name = "yi";
 }
-SuperType.prototype.sayName = function() {
+SuperType.prototype.sayName = function () {
 	console.log(this.name);
 };
 
@@ -512,7 +527,7 @@ let book2 = new SubType();
 console.log(Object.getOwnPropertyNames(book2));
 //[ 'name', 'edition' ]
 
-SubType.prototype = SuperType.prototype
+SubType.prototype = SuperType.prototype;
 console.log(
 	Object.getOwnPropertyNames(SubType.prototype),
 	SubType.prototype.constructor
@@ -526,7 +541,7 @@ console.log(Object.getOwnPropertyNames(book3));
 //[ 'name', 'edition' ]
 
 // 第二个点
-SubType.prototype = object(SuperType.prototype)
+SubType.prototype = object(SuperType.prototype);
 console.log(
 	Object.getOwnPropertyNames(SubType.prototype),
 	SubType.prototype.constructor
@@ -537,7 +552,6 @@ console.log(SubType.prototype === SuperType.prototype);
 let book4 = new SubType();
 console.log(Object.getOwnPropertyNames(book4));
 //[ 'name', 'edition' ]
-
 ```
 
 寄生组合式继承改变原型链的缺点了吗?
@@ -548,7 +562,7 @@ console.log(Object.getOwnPropertyNames(book4));
 
 ```javascript
 function inheritPrototype(SubType, SuperType) {
-	let MediaObj = function() {};
+	let MediaObj = function () {};
 	// 取消掉 SuperType 的构造函数, 只复制原型
 	MediaObj.prototype = SuperType.prototype;
 	SubType.prototype = new MediaObj();
@@ -558,7 +572,7 @@ function SuperType(name, list) {
 	this.name = name;
 	this.list = list;
 }
-SuperType.prototype.sayName = function() {
+SuperType.prototype.sayName = function () {
 	console.log(this.name);
 };
 function SubType(age, name, list) {
@@ -569,11 +583,61 @@ function SubType(age, name, list) {
 inheritPrototype(SubType, SuperType);
 ```
 
-1. 从第一个点和第二个点可以看出: 原型链继承(组合继承)原型函数中仍定义了一个 `name`, 重复定义了两次. 寄生式继承(第二个点)原型函数中不存在重复定义. 原因是: `new` 只会执行后面的函数, 为新对象定义属性. 而寄生式继承的 `new` 的 `NewObj` 函数没有定义自己的属性. 组合继承的 `new` 重复定义了 `SubType()` 的name属性, 这个属性已经从它的实例继承来了.
-2. 构造函数就只是一个函数对象. 它定义的属性只有 `new` 时才会到实例中. 
+1. 从第一个点和第二个点可以看出: 原型链继承(组合继承)原型函数中仍定义了一个 `name`, 重复定义了两次. 寄生式继承(第二个点)原型函数中不存在重复定义. 原因是: `new` 只会执行后面的函数, 为新对象定义属性. 而寄生式继承的 `new` 的 `NewObj` 函数没有定义自己的属性. 组合继承的 `new` 重复定义了 `SubType()` 的 name 属性, 这个属性已经从它的实例继承来了.
+2. 构造函数就只是一个函数对象. 它定义的属性只有 `new` 时才会到实例中.
 3. prototype 对象的属性在实例中不是显然存在, 是通过 `[[prototype]]` 特性链接的. 所以实例的这部分属性可以通过继承来改变.
 4. 动态手动的指定构造函数, 只是一种习惯. 他无法改变 Instanceof 的结果.
 
-问题: 
+问题:
+
 1. `instanceOf` 和 `isPrototypeOf` 的工作原理是什么;
-2. 第二点的原型对象已经没有属性了, 那为啥 constructor 仍有值
+
+## 函数表达式
+
+函数表达式和函数声明的区别在于: **表达式不会提升**.
+
+函数的提升意味着:
+
+```javascript
+if (condition) {
+	function alert1() {
+		console.log("true");
+	}
+} else {
+	function alert1() {
+		console.log("false");
+	}
+}
+```
+
+永远不要这么做, 现在 `nodeJs` 没什么问题. 可能会引起问题, 因为执行代码之前, 就开始声明函数了, 没有循环的效果, 有些情况下会出错.
+
+同样, 提升变量的也应该注意;
+
+### 递归会出现的问题
+把递归函数赋给另外一个变量, 然后取消掉这个原本的函数指向. 就会出错, 因为递归函数内找不见这个函数的指针了.
+
+原来使用 `argument.callee` 来指向永远指向函数, 但是现在严格模式不让用这个了, 所以不推荐使用了.
+
+替代方法:
+
+```javascript
+var factorial = (function f(num){
+	if(num <=1){
+		return 1;
+	}else{
+		return num*f(num - 1 );
+	}
+})
+```
+
+即使把 `factorial` 赋给别的变量, `f()` 永远有效. 推荐这么用, 思想就是把会删除的变量作为一个中间件, 确保底层的安全, 也是确保退路的一种思想.
+
+这里有两个问题:
+
+1. 直接在外部调用 f() 是未定义的;
+3. 这个机理是什么?
+
+### 闭包
+
+
