@@ -1,40 +1,37 @@
-function Book() {}
-
-Book.prototype.name = 'Tom'
-
-book1 = new Book()
-
-Book.prototype = {
-  constructor: Book,
-  name: 'Wang',
-  sayName: function () {
-    return this.name
-  },
+class SuperType {
+	constructor() {
+		this.name = 'tom',
+		this.property = true;
+	}
+	getProperty() {
+		return this.property;
+	}
 }
 
-book2 = new Book()
 
-// book1 没有 sayname
-console.log(book2.sayName(), book1.sayName) 
 
-// book1 no chage
-console.log(
-  book2.name,
-  book1.name
-)
-
-for (let property in book2) {
-  console.log(property)
-}
-console.log("-------")
-for (let property in book1) {
-  console.log(property)
+let SubType=function(){
+	this.prototype=false,
+	this.age=27
 }
 
-// book1 no longer is belong to Book, (Ture, false)
-console.log(book2 instanceof Book, book1 instanceof Book)
+SubType.prototype = new SuperType()
 
-// ture false
-console.log(Book.prototype.isPrototypeOf(book2), Book.prototype.isPrototypeOf(book1))
+// 父类的构造函数方法和原型方法全部被继承
+let type1 = new SubType()
+console.log(type1.getProperty());
+console.log(type1.name)
 
-console.log(Book.constructor)
+// 子类的构造函数的属性也仍然存在
+// 构造函数变为 superType 
+console.log(type1.age, Object.getPrototypeOf(type1).constructor)
+
+
+// true true 
+console.log(type1 instanceof SubType, type1 instanceof SuperType)
+//false true
+console.log(SubType instanceof SuperType, SubType.prototype instanceof SuperType)
+
+// true true true 
+
+console.log(Object.prototype.isPrototypeOf(type1), SuperType.prototype.isPrototypeOf(type1), SubType.prototype.isPrototypeOf(type1))
