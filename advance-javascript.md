@@ -631,13 +631,139 @@ var factorial = (function f(num){
 })
 ```
 
+使用的是*命名函数表达式,* 函数名只作为函数内部的一个变量.
+
 即使把 `factorial` 赋给别的变量, `f()` 永远有效. 推荐这么用, 思想就是把会删除的变量作为一个中间件, 确保底层的安全, 也是确保退路的一种思想.
 
-这里有两个问题:
-
-1. 直接在外部调用 f() 是未定义的;
-3. 这个机理是什么?
 
 ### 闭包
+#### 理解闭包
+首先, 闭包是: **有权访问另一个函数作用域的变量的函数**.
 
+来理解闭包实现的原理: 首先明白执行环境, 变量对象和作用域链, 这里又比之前多了一些内容. **创建** 函数时, 会创建一个预先包含这个函数之外所有变量对象的作用链,最先的变量对象是这个函数最近邻的执行环境, 最末尾的是全局环境. 这个作用链保存在函数对象的 `[[Scope]]` 中.
+
+当**调用** 函数的时候, 创建这个函数的变量对象, 然后复制 `[[Scope]]` 中的作用链域, 并把新建的变量对象推入到作用链域的最前端. 作用域链本质上是一个指向变量对象的指针列表，它只引用但不实际包含变量对象。
+
+当函数**调用完毕之后**, 它的作用链域销毁, 它的变量对象不一定, 取决于别的作用链域是否还指向它. 
+
+所以, 这里就是闭包的原理了. 把它**定义在一个函数内部**, 这个函数即使不再调用, 它的变量对象因为被内部的闭包使用, 不能被标记清楚. 因此, 闭包可以访问这个函数作用域中的函数. 
+
+#### 闭包的缺陷
+因为闭包引用了其包裹函数的变量对象, 这个变量对象不能及时销毁, 所以闭包会占用更多的内存. 
+
+因此, 只在绝对必要的情况下使用闭包. 使用完毕之后应及时接触对闭包的引用. 下面是一个闭包使用的例子:
+
+```javascript
+function creatComparisonFunction(propertyName) {
+	return function(object1, object2) {
+		let value1 = object1[propertyName];
+		// 闭包函数使用包裹函数的变量
+		let value2 = object2[propertyName];
+		console.log(value2, value1);
+	};
+}
+let consoleName = creatComparisonFunction("name");
+// 这里把闭包引出来使用
+let Book = function(name) {
+	this.name = name;
+};
+book1 = new Book('Dom');
+book2 = new Book('Bom');
+consoleName(book1, book2);
+// Bom Dom
+// 接触对闭包函数的引用, 标记清除
+consoleName = null;
+```
+
+[需要记住的第三张图](https://cdn.jsdelivr.net/gh/zzan1/markdownPicture/normal/20200609195324.png)
+
+另外, 闭包只能访问包裹函数变量的最后一个值. 因为它包含的变量对象里面只有一个变量, 这个变量不可能平白的被复制多个并且有不同的值.
+
+```javascript
+function createFunction() {
+	let result = new Array();
+
+	for (var i = 0; i < 10; i++) {
+		result[i] = function() {
+			return i;
+		};
+	}
+	return result;
+}
+console.log(createFunction()[2]())
+```
+
+这个每个闭包函数的执行结果都是 10, 因为访问的是包裹函数变量对象的同一个 i 变量.
+
+```javascript
+function createFunction() {
+	let result = new Array();
+
+	for (let i = 0; i < 10; i++) {
+		result[i] = function() {
+			return i;
+		};
+	}
+	return result;
+}
+console.log(createFunction()[2]())
+```
+
+这个结果就是[0, 1, 2, ...] 正常结果了. 原因是: 使用 `let` 定义的属性不在函数的变量对象中, 所以这个 `let` 定义的属性可以不只是一个. 这个 `let` 定义的变量在这里函数变量对象的中间. 它们十个函数引用的是不同的 `i` 变量对象, 从包裹函数开始分开了. `var` 定义的变量处于包裹函数的变量对象内. 
+
+另外一种方法是一样的道理, 从中截掉这个作用链域. 
+
+```javascript
+function createFunction() {
+	let result = new Array();
+
+	for (var i = 0; i < 10; i++) {
+		result[i] = function (num){
+			return function(){
+				return num;
+			}
+		}(i)
+	}
+	return result;
+}
+console.log(createFunction()[8]())
+```
+
+闭包的第三个问题: this 的指向问题
+
+
+```javascript
+var name = 'The'
+
+var object = {
+	name: "Obj",
+	getNameFunc: function(){
+		// var that = this 这个this 就指调用 function 的对象
+		return function(){
+			return this.name;
+		}
+	}
+}
+
+console.log(object.getNameFunc()())
+```
+
+这段代码在 `nodeJs` 输出为 underfined, 在浏览器中输出 the, 意思指向了 windows 对象. 
+
+直接说原理: this 的值由谁调用这个函数来决定.
+
+只找一层, 比如, 第一个执行函数时, obj 调用的第二个 func 需要找 this, 但调用它的是第一个 func, 他不是一个this需要的对象, 即使它的 argumets 或者 变量对象中有一个 name 变量. 如果是第一个 func 需要找 this, 那么就去 obj 去找了. 
+
+引入this的初衷就是想在原型继承的情况下，拿到函数的调用者。如果存在原型链, 那么他就找原型链上的对象.如果会找不到，那就让this指向全局对象吧。
+ 
+如果要使用包裹函数的变量, 就把它的 this 提前 赋给 that, 手动的指明 this 的指向. 
+
+
+```javascript
+(object.getName)() //My
+(object.getName = object.getName)() // global
+```
+
+
+#### 闭包有什么用
 
