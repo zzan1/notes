@@ -12,3 +12,9 @@ var object = {
 }
 
 console.log(object.getNameFunc()())
+var a =1 ;
+let b = 1;
+var a;
+
+console.log(a)
+
