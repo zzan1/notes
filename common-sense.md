@@ -134,3 +134,35 @@ UI事件是指那些不一定与用户操作有关的事件.
 - [ ] Ajax
 - [ ] JSOn
 - [ ] ES6
+
+
+## 错误处理与调试
+
+语句
+
+```javascript
+try{
+	...
+}catch(error){
+	...
+}finally{
+	...
+}
+```
+
+1. finally 的语句必定会执行, 它可以忽略其他两个的 `return` 语句.
+2. finally 和 catch 使用一个就行.
+
+语句
+```javascript
+throw 121;
+throw new Error('this cann't work now.');
+throw new TypeError('there is a problem in the script');
+```
+
+1. throw 立即终止脚本运行, 除非被捕获;
+2. throw 可以抛出任何类型;
+3. throw 可以利用 这些已经存在的对象, 抛出一些信息, 这些错误可以被浏览器感知;
+4. 也可以利用原型链, 从 Error 基对象自定义一个错误对象.
+
+
